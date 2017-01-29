@@ -97,24 +97,19 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\libopenmetaverse\OpenMetaverse.StructuredData\OpenMetaverse.StructuredData.csproj">
-      <Project>{30a05ddf-2e34-4a8e-a17d-7b2cfedf73a8}</Project>
-      <Name>OpenMetaverse.StructuredData</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\libopenmetaverse\OpenMetaverse.Utilities\OpenMetaverse.Utilities.csproj">
-      <Project>{dd93a90b-8b9c-4cc1-aac3-0b6beec5c774}</Project>
+    <ProjectReference Include="..\libopenmetaverse\OpenMetaverse.Utilities\OpenMetaverse.Utilities.csproj">
+      <Project>{d12b48a0-5649-4bf2-b84e-31236c70826e}</Project>
       <Name>OpenMetaverse.Utilities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\libopenmetaverse\OpenMetaverseTypes\OpenMetaverseTypes.csproj">
-      <Project>{0729e20e-238a-4d04-a049-0f75f6903af0}</Project>
+    <ProjectReference Include="..\libopenmetaverse\OpenMetaverseTypes\OpenMetaverseTypes.csproj">
+      <Project>{e71cccab-1823-4ace-930f-7d6bbc4edc92}</Project>
       <Name>OpenMetaverseTypes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\libopenmetaverse\OpenMetaverse\OpenMetaverse.csproj">
+    <ProjectReference Include="..\libopenmetaverse\OpenMetaverse\OpenMetaverse.csproj">
       <Project>{953d44ec-ffbd-4552-aa51-4040ec921504}</Project>
       <Name>OpenMetaverse</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
