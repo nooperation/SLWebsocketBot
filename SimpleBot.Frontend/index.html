@@ -10,29 +10,25 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <style>
-.box-header > .fa,
-.box-header > .glyphicon,
-.box-header > .ion,
-.box-header .box-title {
+.chat-header > .fa,
+.chat-header > .glyphicon,
+.chat-header > .ion,
+.chat-header .content-title {
   display: inline-block;
   font-size: 18px;
   margin: 0;
   line-height: 1;
+  right: 5px;
 }
 
-  .box-header > .fa,
-.box-header > .glyphicon,
-.box-header > .ion {
-  margin-right: 5px;
-}
-  body {
+body {
   font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 400;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
-  .box {
+.box {
   position: relative;
   border-radius: 3px;
   background: #ffffff;
@@ -41,13 +37,14 @@
   width: 100%;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
-.box-header {
+.chat-header {
   color: #444;
   display: block;
   padding: 10px;
   position: relative;
 }
-  .box.box-success {
+
+.box.box-success {
   border-top-color: #00a65a;
 }
 
@@ -60,7 +57,7 @@
   padding: 10px;
   background-color: #ffffff;
 }
-/* Chat widget (DEPRECATED - this will be removed in the next major release. Use Direct Chat instead)*/
+
 .chat {
   padding: 5px 20px 5px 10px;
 }
@@ -78,8 +75,8 @@
 .chat .item > img {
   width: 40px;
   height: 40px;
-  border: 2px solid transparent;
-  border-radius: 50%;
+  border: 1px solid black;
+  box-shadow: 2px 2px #555555;
 }
 .chat .item > .online {
   border: 2px solid #00a65a;
@@ -95,58 +92,67 @@
   display: block;
   font-weight: 600;
 }
-.chat .item > .attachment {
-  border-radius: 3px;
-  background: #f4f4f4;
-  margin-left: 65px;
-  margin-right: 15px;
-  padding: 10px;
-}
-.chat .item > .attachment > h4 {
-  margin: 0 0 5px 0;
-  font-weight: 600;
-  font-size: 14px;
-}
-.chat .item > .attachment > p,
-.chat .item > .attachment > .filename {
-  font-weight: 600;
-  font-size: 13px;
-  font-style: italic;
-  margin: 0;
-}
-.chat .item > .attachment:before,
-.chat .item > .attachment:after {
-  content: " ";
-  display: table;
-}
-.chat .item > .attachment:after {
-  clear: both;
-}
-.box-input {
+.content-input {
   max-width: 200px;
 }
 .modal .panel-body {
   color: #444;
 }
+
+#chat_container {
+  position: absolute;
+  display: table;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  height: 100%;
+  width: 100%;
+}
+
+#chat-header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+}
+#chat-content {
+  position: absolute;
+  top: 40px;
+  bottom: 48px;
+  left: 0px;
+  right: 0px;
+  overflow-y: scroll;
+}
+#chat-input-container {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px; 
+}
   </style>
 </head>
 
-<body>
-  <div class="box box-success">
-    <div class="box-header">
-      <i class="fa fa-comments-o"></i>
-      <h3 class="box-title">Chat</h3>
-    </div>
-    <div class="box-body chat" id="chat-box" style="overflow-y: scroll; height: 512px;">
 
+
+
+
+<body>
+  <div id="chat_container">
+    <div class="chat-header">
+      <i class="fa fa-comments-o"></i>
+      <h3 class="content-title">Chat</h3>
     </div>
-    <div class="box-footer">
-      <div class="input-group">
-        <input class="form-control" placeholder="Type message...">
-        <div class="input-group-btn">
-          <button type="button" class="btn btn-success"><i class="fa fa-plus"></i></button>
+    <div id="chat-content" class="box-body chat">
+    </div>
+    <div id="chat-input-container">
+      <form action="#" id="chat-form">
+        <div class="input-group">
+          <input id="chat-input" class="form-control" type="text" autocomplete="off" placeholder="Write your message here..." />
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="submit">Send</button>
+          </span>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </body>
@@ -157,7 +163,7 @@
   var UUID_ZERO = '00000000-0000-0000-0000-000000000000';
   var UUID_DEFAULT_PROFILE_IMAGE = '4235acd5-6726-caa7-fe26-60c965992a63';
   var URL_IMAGE_SERVER = 'http://texture-service.agni.lindenlab.com/';
-
+  
   var StartWebsocket = function () {
     socket = new WebSocket('ws://localhost:1234/Bot');
 
@@ -204,7 +210,7 @@
       AddClientMessage('Logged out');
     },
     'InstantMessage': function (message) {
-      AddClientMessage('Instant message from ' + message.FromAgentName + ': ' + message.Message);
+      AddClientMessage('Instant message from ' + message.IM.FromAgentName + ': ' + message.IM.Message);
     },
     'Chat': function (message) {
       AddChatMessage(message);
@@ -226,6 +232,25 @@
       }
     }
   }
+
+
+  $('#chat-form').submit(function(){
+    var chat_input = $('#chat-input');
+    if(chat_input.val().trim().length > 0)
+    {
+      var json_data = JSON.stringify({
+        MessageType: 'ChatRequest',
+        Payload: {
+          Message: chat_input.val(),
+          ChatType: 'Normal',
+          Channel: 0
+        }
+      });
+      socket.send(json_data);
+    }
+    chat_input.val('');
+    return false;
+  });
 
   var UpdateProfileImages = function () {
     var items_needing_updates = document.getElementsByClassName('unknown-profile-image');
@@ -280,11 +305,11 @@
     chat_item.append(profile_image);
     chat_item.append(message_container);
 
-    var chat_box = $('#chat-box');
-    chat_box.append(chat_item);
+    var chat_content = $('#chat-content');
+    chat_content.append(chat_item);
 
-    var chat_box_dom = document.getElementById("chat-box");
-    chat_box_dom.scrollTop = chat_box_dom.scrollHeight;
+    var chat_content_dom = document.getElementById("chat-content");
+    chat_content_dom.scrollTop = chat_content_dom.scrollHeight;
   }
 
   var AddClientMessage = function(message) {

@@ -16,10 +16,18 @@ namespace SimpleBot.Server.ClientMessages
     ProfileRequest,
     RegionStatsRequest,
     AvatarListRequest,
+    ChatRequest,
   }
 
   public class ProfileRequestMessage
   {
     public string AgentId { get; set; }
+  }
+
+  public class ChatRequestMessage
+  {
+    public string Message { get; set; }
+    public int Channel { get; set; }
+    public ChatType ChatType { get; set; }
   }
 }

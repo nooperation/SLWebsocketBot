@@ -95,6 +95,12 @@ namespace SimpleBot.Server.Services
             });
             break;
           }
+          case ClientMessageType.ChatRequest:
+          {
+            var chat_request = JsonConvert.DeserializeObject<ChatRequestMessage>(payload.ToString());
+            Program.Instance.Client.Self.Chat(chat_request.Message, chat_request.Channel, chat_request.ChatType);
+            break;
+          }
           default:
           {
             Console.WriteLine($"Unknown message type '{message_type}'");
