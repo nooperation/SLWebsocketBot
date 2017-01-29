@@ -5,18 +5,19 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBot", "SimpleBot\SimpleBot.csproj", "{30AF1087-DC1B-46F6-BC38-CA8B5B217969}"
 	ProjectSection(ProjectDependencies) = postProject
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE} = {BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}
 		{953D44EC-FFBD-4552-AA51-4040EC921504} = {953D44EC-FFBD-4552-AA51-4040EC921504}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBot.Tests", "SimpleBot.Tests\SimpleBot.Tests.csproj", "{BDD8DCA2-506D-4421-84A6-7EDF16A2F0F9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "..\libopenmetaverse\Programs\examples\TestClient\TestClient.csproj", "{59FDE120-7D66-4899-846A-2495D9AD4417}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMetaverse", "libopenmetaverse\OpenMetaverse\OpenMetaverse.csproj", "{953D44EC-FFBD-4552-AA51-4040EC921504}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMetaverseTypes", "libopenmetaverse\OpenMetaverseTypes\OpenMetaverseTypes.csproj", "{E71CCCAB-1823-4ACE-930F-7D6BBC4EDC92}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMetaverse.Utilities", "libopenmetaverse\OpenMetaverse.Utilities\OpenMetaverse.Utilities.csproj", "{D12B48A0-5649-4BF2-B84E-31236C70826E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMetaverse.StructuredData", "libopenmetaverse\OpenMetaverse.StructuredData\OpenMetaverse.StructuredData.csproj", "{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,22 +63,6 @@ Global
 		{BDD8DCA2-506D-4421-84A6-7EDF16A2F0F9}.Release|x64.Build.0 = Release|Any CPU
 		{BDD8DCA2-506D-4421-84A6-7EDF16A2F0F9}.Release|x86.ActiveCfg = Release|Any CPU
 		{BDD8DCA2-506D-4421-84A6-7EDF16A2F0F9}.Release|x86.Build.0 = Release|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Debug|ARM.Build.0 = Debug|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Debug|x64.Build.0 = Debug|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Debug|x86.Build.0 = Debug|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Release|ARM.ActiveCfg = Release|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Release|ARM.Build.0 = Release|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Release|x64.ActiveCfg = Release|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Release|x64.Build.0 = Release|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Release|x86.ActiveCfg = Release|Any CPU
-		{59FDE120-7D66-4899-846A-2495D9AD4417}.Release|x86.Build.0 = Release|Any CPU
 		{953D44EC-FFBD-4552-AA51-4040EC921504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{953D44EC-FFBD-4552-AA51-4040EC921504}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{953D44EC-FFBD-4552-AA51-4040EC921504}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -126,6 +111,22 @@ Global
 		{D12B48A0-5649-4BF2-B84E-31236C70826E}.Release|x64.Build.0 = Release|Any CPU
 		{D12B48A0-5649-4BF2-B84E-31236C70826E}.Release|x86.ActiveCfg = Release|Any CPU
 		{D12B48A0-5649-4BF2-B84E-31236C70826E}.Release|x86.Build.0 = Release|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Debug|ARM.Build.0 = Debug|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Debug|x64.Build.0 = Debug|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Debug|x86.Build.0 = Debug|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Release|ARM.ActiveCfg = Release|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Release|ARM.Build.0 = Release|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Release|x64.ActiveCfg = Release|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Release|x64.Build.0 = Release|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Release|x86.ActiveCfg = Release|Any CPU
+		{BE904AE6-0342-44E3-ACFB-6FAF82D9D7AE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
