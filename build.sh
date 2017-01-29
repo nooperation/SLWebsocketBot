@@ -1,0 +1,1 @@
+xbuild /p:configuration=release SimpleBot.sln
