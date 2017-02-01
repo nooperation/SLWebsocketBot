@@ -27,7 +27,9 @@ namespace SimpleBot.Server
       }
  
       Server = new WebSocketServer(port);
-      Server.AddWebSocketService<BotService>(BotService.ServicePath);
+      Server.AddWebSocketService<BotService>(BotService.ServicePath, () => new BotService() {
+        IgnoreExtensions = true
+      });
       Server.Start();
 
       JsonConvert.DefaultSettings = (() =>

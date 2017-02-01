@@ -33,7 +33,7 @@ namespace SimpleBot
       ChatManager.Init();
       AvatarPropertiesRequestManager.Init();
 
-      WebsocketBackend.Instance.Init(1234);
+      WebsocketBackend.Instance.Init(55000);
     }
 
     public bool Poll()
