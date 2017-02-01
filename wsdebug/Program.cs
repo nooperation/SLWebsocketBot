@@ -15,7 +15,7 @@ namespace wsdebug
     protected override void OnOpen()
     {
       base.OnOpen();
-
+      
       Console.WriteLine("Client connected");
     }
 
@@ -29,7 +29,7 @@ namespace wsdebug
     {
       var json_data = e.Data;
       Console.WriteLine("Message from client: " + json_data);
-    }
+    } 
   }
 
   class Program
@@ -44,8 +44,11 @@ namespace wsdebug
         Server = null;
       }
  
+      
       Server = new WebSocketServer(port);
-      Server.AddWebSocketService<BotService>(BotService.ServicePath);
+      Server.AddWebSocketService<BotService>(BotService.ServicePath, () => new BotService() {
+        IgnoreExtensions = true
+      });
       Server.Start();
     }
 
