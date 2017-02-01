@@ -165,7 +165,7 @@ body {
   var URL_IMAGE_SERVER = 'http://texture-service.agni.lindenlab.com/';
   
   var StartWebsocket = function () {
-    socket = new WebSocket('ws://localhost:1234/Bot');
+    socket = new WebSocket('ws://127.0.0.1:1234/Bot');
 
     socket.onopen = function (event) {
       console.log('Connected');
@@ -265,6 +265,8 @@ body {
 
         profile_element.src = URL_IMAGE_SERVER + profile_image_id + '/320x240.jpg/';
         profile_element.className = 'known-profile-image';
+         // items_needing_updates no longer contains this element after the above modification
+        --i;
       }
     }
   }
