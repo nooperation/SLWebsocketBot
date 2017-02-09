@@ -165,11 +165,11 @@ body {
   var URL_IMAGE_SERVER = 'http://texture-service.agni.lindenlab.com/';
   
   var StartWebsocket = function () {
-    socket = new WebSocket('ws://127.0.0.1:1234/Bot');
+    socket = new WebSocket('ws://127.0.0.1:55000/Bot');
 
     socket.onopen = function (event) {
       console.log('Connected');
-      socket.send('init_frontpage');
+      socket.send('hello');
     };
 
     socket.onerror = function (event) {

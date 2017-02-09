@@ -1,5 +1,6 @@
 ﻿using OpenMetaverse;
 using SimpleBot.Server;
+using SimpleBot.Server.ServerMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace SimpleBot.Managers
 {
   class ChatManager : ManagerBase
   {
-    public LinkedList<Server.ServerMessages.ChatMessage> ChatHistory { get; protected set; } = new LinkedList<Server.ServerMessages.ChatMessage>();
+    public LinkedList<IServerMessage> ChatHistory { get; protected set; } = new LinkedList<IServerMessage>();
+    public LinkedList<IServerMessage> InstantMessageHistory { get; protected set; } = new LinkedList<IServerMessage>();
     public int MaxChatHistoryLength => 100;
 
     public override bool Init()
