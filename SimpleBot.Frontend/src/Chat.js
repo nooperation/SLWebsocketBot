@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import SampleSession from './Samples.js';
 
 class ChatItem extends Component {
   render() {
@@ -20,7 +21,7 @@ class ChatHeader extends Component {
     return (
       <header className="chat-header">
         <i className="chat-header-icon fa fa-comments-o"></i>
-        <h3 className="chat-header-title">Chat</h3>
+        <h3 className="chat-header-title">{this.props.title}</h3>
       </header>
     );
   }
@@ -63,18 +64,51 @@ class Chat extends Component {
   constructor() {
     super();
 
+    this.is_updating_state = false;
+    this.message_queue = [];
     this.state = {
-      messages: [
-        { name: 'First.Person', date: '2017-02-06T21:42:54.7443608-05:00', uuid: '00000000-0000-0000-0000-000000000000', sourceType: 'Agent', message: 'Hello world!'   },
-        { name: 'Second.Person', date: '2017-02-06T21:42:54.7443608-05:00', uuid: '00000000-0000-0000-0000-000000000000', sourceType: 'Agent', message: 'This is another message'   },
-      ]
+      messages: []
     }
+  }
+
+  componentDidMount() {
+    this.AddChatMessage('First.Person', 'Hello world!', '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000000', 'Agent', null, '#');
+    this.AddChatMessage('Second.Person', 'Another message from a different person', '2017-02-06T21:42:55.0000000-05:00', '00000000-0000-0000-0000-000000000001', 'Agent', null, '#');
+  }
+
+  AddChatMessage(name, message, time, id, sourceType, profile_image_id, profile_url) {
+    this.message_queue.push({
+      name: name,
+      message: message,
+      date: time,
+      uuid: id,
+      sourceType: sourceType
+    });
+    this.PollMessageQueue();
+  }
+
+  PollMessageQueue() {
+    if (this.is_updating_state == false && this.message_queue.length > 0) {
+      this.is_updating_state = true;
+
+      const old_messages = this.state.messages.slice();
+      const new_messages = this.message_queue.splice(0);
+      const new_state = {
+        messages: old_messages.concat(new_messages)
+      }
+      this.setState(new_state, this.OnMessageStateUpdated);
+    }
+  }
+
+  OnMessageStateUpdated() {
+    this.is_updating_state = false;
+    this.PollMessageQueue();
   }
 
   render() {
     return (
       <div className="chat-container wrapper">
-        <ChatHeader />
+        <ChatHeader title={this.props.title} />
         <ChatContent messages={this.state.messages} />
         <ChatInput />
       </div>
