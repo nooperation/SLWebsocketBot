@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import SampleSession from './Samples.js';
 
+const DEFUALT_PROFILE_IMAGE = "http://texture-service.agni.lindenlab.com/4235acd5-6726-caa7-fe26-60c965992a63/320x240.jpg/";
+
 class ChatItem extends Component {
   render() {
     return (
-      <div className="chat-item chat-sourcetype-{this.props.sourceType}">
-        <img src="http://texture-service.agni.lindenlab.com/4235acd5-6726-caa7-fe26-60c965992a63/320x240.jpg/" alt="user image" className="chat-item-image known-profile-image" data-uuid="{this.props.uuid}" />
+      <div className={"chat-item chat-message-type-" + this.props.message.message_type }>
+        <img src={this.props.message.profile_image_url || DEFUALT_PROFILE_IMAGE} alt="user image" className="chat-item-image" />
         <div className="chat-item-message-container">
-          <a className="chat-item-name" target="self" href={"https://my.secondlife.com/" + this.props.name}>{this.props.name}</a>
-          <p className="chat-item-message">{this.props.message}</p>
+          <a className="chat-item-name" target="self" href={"https://my.secondlife.com/" + this.props.message.name}>{this.props.message.name}</a>
+          <p className="chat-item-message">{this.props.message.message}</p>
         </div>  
-        <small className="chat-item-extras">{this.props.date}</small>
+        <small className="chat-item-extras">{this.props.message.date}</small>
       </div>
     )
   }
@@ -30,11 +32,11 @@ class ChatHeader extends Component {
 class ChatContent extends Component {
   render() {
     return (
-      <article className="box-body chat chat-container-body">
+      <article className="box-body chat-container-body">
         {
           this.props.messages.map(function (item) {
             return (
-              <ChatItem name={item.name} message={item.message} uuid={item.uuid} sourceType={item.sourceType} date={item.date} />
+              <ChatItem message={item} />
             );
           })
         }
@@ -44,14 +46,40 @@ class ChatContent extends Component {
 }
 
 class ChatInput extends Component {
+  constructor() {
+    super();
+    this.state = {
+      message: ''
+    }
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({
+      message: event.target.value
+    });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    if (this.props.onSendMessage) {
+      this.props.onSendMessage(this.state.message);
+    }  
+    this.setState({
+      message: ''
+    });
+  }
+
   render() {
     return (
       <footer className="chat-container-footer">
-        <form action="#" id="chat-form">
+        <form onSubmit={this.handleSubmit} action="#">
           <div className="input-group">
-            <input id="chat-input" className="form-control" type="text" autocomplete="off" placeholder="Write your message here..." />
+            <input className="form-control" type="text" autocomplete="off" placeholder="Write your message here..." value={this.state.message} onChange={this.handleChange}  />
             <span className="input-group-btn">
-              <button className="btn btn-default" type="submit">Send</button>
+              <button className="btn btn-default" type="button" onClick={this.handleSubmit}>Send</button>
             </span>
           </div>
         </form>
@@ -67,22 +95,18 @@ class Chat extends Component {
     this.is_updating_state = false;
     this.message_queue = [];
     this.state = {
-      messages: []
+      messages: [],
     }
   }
 
-  componentDidMount() {
-    this.AddChatMessage('First.Person', 'Hello world!', '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000000', 'Agent', null, '#');
-    this.AddChatMessage('Second.Person', 'Another message from a different person', '2017-02-06T21:42:55.0000000-05:00', '00000000-0000-0000-0000-000000000001', 'Agent', null, '#');
-  }
-
-  AddChatMessage(name, message, time, id, sourceType, profile_image_id, profile_url) {
+  AddChatMessage(name, message, time, uuid, message_type, profile_image_url, profile_url) {
     this.message_queue.push({
       name: name,
       message: message,
       date: time,
-      uuid: id,
-      sourceType: sourceType
+      uuid: uuid,
+      message_type: message_type,
+      profile_image_url: profile_image_url
     });
     this.PollMessageQueue();
   }
@@ -105,15 +129,19 @@ class Chat extends Component {
     this.PollMessageQueue();
   }
 
+  handleOnSendMessage(message) {
+    alert('TODO: send "' + message + '"');
+  }
+
   render() {
     return (
       <div className="chat-container wrapper">
         <ChatHeader title={this.props.title} />
         <ChatContent messages={this.state.messages} />
-        <ChatInput />
+        <ChatInput onSendMessage={this.handleOnSendMessage}/>
       </div>
     );
-  }  
+  }
 }
 
 export default Chat;
