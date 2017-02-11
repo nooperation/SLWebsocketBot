@@ -7,11 +7,11 @@ class ChatItem extends Component {
   render() {
     return (
       <div className={"chat-item chat-message-type-" + this.props.message.message_type }>
-        <img src={this.props.message.profile_image_url || DEFUALT_PROFILE_IMAGE} alt="user image" className="chat-item-image" />
+        <img src={this.props.message.profile_image_url || DEFUALT_PROFILE_IMAGE} alt="headshot" className="chat-item-image" />
         <div className="chat-item-message-container">
           <a className="chat-item-name" target="self" href={"https://my.secondlife.com/" + this.props.message.name}>{this.props.message.name}</a>
           <p className="chat-item-message">{this.props.message.message}</p>
-        </div>  
+        </div>
         <small className="chat-item-extras">{this.props.message.date}</small>
       </div>
     )
@@ -30,9 +30,32 @@ class ChatHeader extends Component {
 }
 
 class ChatContent extends Component {
+  constructor() {
+    super();
+
+    this.handleOnScroll = this.handleOnScroll.bind(this);
+    this.chat_list = null;
+    this.is_autoscroll_enabled = true;
+  }
+
+  componentDidUpdate() {
+    if (this.chat_list && this.is_autoscroll_enabled) {
+      this.chat_list.scrollTop = this.chat_list.scrollHeight;
+    }
+  }
+
+  handleOnScroll(event) {
+    const AUTOSCROLL_THRESHOLD = 5;
+
+    const target = event.target;
+    const diff = Math.abs(target.scrollTop - (target.scrollHeight - target.clientHeight));
+
+    this.is_autoscroll_enabled =  diff < AUTOSCROLL_THRESHOLD
+  }
+
   render() {
     return (
-      <article className="box-body chat-container-body">
+      <article id="foobar" className="box-body chat-container-body" ref={chat_list => this.chat_list = chat_list} onScroll={this.handleOnScroll}>
         {
           this.props.messages.map(function (item) {
             return (
@@ -66,7 +89,7 @@ class ChatInput extends Component {
     event.preventDefault();
     if (this.props.onSendMessage) {
       this.props.onSendMessage(this.state.message);
-    }  
+    }
     this.setState({
       message: ''
     });
@@ -85,7 +108,7 @@ class ChatInput extends Component {
         </form>
       </footer>
     );
-  } 
+  }
 }
 
 class Chat extends Component {

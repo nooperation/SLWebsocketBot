@@ -14,9 +14,14 @@ class App extends Component {
       messages: [],
       profiles: [],
     }
+
+    this.handleOnSendMessage = this.handleOnSendMessage.bind(this);
   }
 
   addChatMessage(name, message, time, uuid, message_type, profile_image_url, profile_url) {
+    if (uuid in this.state.profiles) {
+      profile_image_url = this.state.profiles[uuid].profile_image_url;
+    }
     this.setState((state) => {
       state.messages.push({
         name: name,
@@ -26,6 +31,29 @@ class App extends Component {
         message_type: message_type,
         profile_image_url: profile_image_url
       });
+    });
+  }
+
+  addProfile(uuid, profile) {
+    this.setState(state => {
+      state.profiles[uuid] = profile;
+      this.updateMessagesInState(uuid, state);
+    });
+  }
+
+  updateMessagesInState(uuid, state) {
+    var messages = state.messages.slice(0);
+    for (var i = 0; i < messages.length; ++i) {
+      if (messages[i].uuid === uuid) {
+        messages[i].profile_image_url = this.state.profiles[uuid].profile_image_url;
+      }
+    }
+    state.messages = messages;
+  }
+
+  updateMessages(uuid) {
+    this.setState(state => {
+      this.updateMessagesInState(uuid, state);
     });
   }
 
@@ -40,9 +68,15 @@ class App extends Component {
     }
 
     var instance = this;
+    var spam_counter = 0;
+    setInterval(function () {
+      instance.addChatMessage('Another.Person', spam_counter + ' | ' + Math.random(), '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000003', 'Agent', null, '#');
+      ++spam_counter;
+    }, 1000);
+
     setTimeout(function() {
-      instance.setState((state) => {
-        state.messages[1].profile_image_url = 'http://texture-service.agni.lindenlab.com/89556747-24cb-43ed-920b-47caed15465f/320x240.jpg/'
+      instance.addProfile('00000000-0000-0000-0000-000000000001', {
+        profile_image_url: 'http://texture-service.agni.lindenlab.com/89556747-24cb-43ed-920b-47caed15465f/320x240.jpg/'
       });
     }, 1000);
   }
