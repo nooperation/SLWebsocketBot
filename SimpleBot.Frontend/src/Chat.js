@@ -89,56 +89,12 @@ class ChatInput extends Component {
 }
 
 class Chat extends Component {
-  constructor() {
-    super();
-
-    this.is_updating_state = false;
-    this.message_queue = [];
-    this.state = {
-      messages: [],
-    }
-  }
-
-  AddChatMessage(name, message, time, uuid, message_type, profile_image_url, profile_url) {
-    this.message_queue.push({
-      name: name,
-      message: message,
-      date: time,
-      uuid: uuid,
-      message_type: message_type,
-      profile_image_url: profile_image_url
-    });
-    this.PollMessageQueue();
-  }
-
-  PollMessageQueue() {
-    if (this.is_updating_state == false && this.message_queue.length > 0) {
-      this.is_updating_state = true;
-
-      const old_messages = this.state.messages.slice();
-      const new_messages = this.message_queue.splice(0);
-      const new_state = {
-        messages: old_messages.concat(new_messages)
-      }
-      this.setState(new_state, this.OnMessageStateUpdated);
-    }
-  }
-
-  OnMessageStateUpdated() {
-    this.is_updating_state = false;
-    this.PollMessageQueue();
-  }
-
-  handleOnSendMessage(message) {
-    alert('TODO: send "' + message + '"');
-  }
-
   render() {
     return (
       <div className="chat-container wrapper">
         <ChatHeader title={this.props.title} />
-        <ChatContent messages={this.state.messages} />
-        <ChatInput onSendMessage={this.handleOnSendMessage}/>
+        <ChatContent messages={this.props.messages} />
+        <ChatInput onSendMessage={this.props.onSendMessage}/>
       </div>
     );
   }
