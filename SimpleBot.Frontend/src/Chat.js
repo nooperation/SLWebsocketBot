@@ -57,9 +57,9 @@ class ChatContent extends Component {
     return (
       <article id="foobar" className="box-body chat-container-body" ref={chat_list => this.chat_list = chat_list} onScroll={this.handleOnScroll}>
         {
-          this.props.messages.map(function (item) {
+          this.props.messages.map(function (item, index) {
             return (
-              <ChatItem message={item} />
+              <ChatItem key={index} message={item} />
             );
           })
         }
@@ -100,7 +100,7 @@ class ChatInput extends Component {
       <footer className="chat-container-footer">
         <form onSubmit={this.handleSubmit} action="#">
           <div className="input-group">
-            <input className="form-control" type="text" autocomplete="off" placeholder="Write your message here..." value={this.state.message} onChange={this.handleChange}  />
+            <input className="form-control" type="text" autoComplete="off" placeholder="Write your message here..." value={this.state.message} onChange={this.handleChange}  />
             <span className="input-group-btn">
               <button className="btn btn-default" type="button" onClick={this.handleSubmit}>Send</button>
             </span>

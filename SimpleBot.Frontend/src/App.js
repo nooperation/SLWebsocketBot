@@ -3,7 +3,7 @@ import SampleSession from './Samples.js';
 import Chat from './Chat.js';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
-
+import { Tabs, TabItem } from './Tabs.js';
 
 class App extends Component {
   constructor() {
@@ -85,7 +85,17 @@ class App extends Component {
     return (
       <div className="App">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" />
-        <Chat title="Chat" messages={this.state.messages} onSendMessage={this.handleOnSendMessage}/>
+        <Tabs className="nav nav-tabs">
+          <TabItem header="Local Chat">
+            <Chat title="Chat" messages={this.state.messages} onSendMessage={this.handleOnSendMessage} />
+          </TabItem>
+          <TabItem header="Test 1">
+            <Chat title="Null chat" messages={[]} />
+          </TabItem>
+          <TabItem header="Test 2">
+            <h2>Test 2</h2>
+          </TabItem>
+        </Tabs>
       </div>
     );
   }
