@@ -29,7 +29,8 @@ class App extends Component {
         date: time,
         uuid: uuid,
         message_type: message_type,
-        profile_image_url: profile_image_url
+        profile_image_url: profile_image_url,
+        revision: 0
       });
     });
   }
@@ -46,6 +47,7 @@ class App extends Component {
     for (var i = 0; i < messages.length; ++i) {
       if (messages[i].uuid === uuid) {
         messages[i].profile_image_url = this.state.profiles[uuid].profile_image_url;
+        messages[i].revision++;
       }
     }
     state.messages = messages;
@@ -74,11 +76,12 @@ class App extends Component {
       ++spam_counter;
     }, 1000);
 
-    setTimeout(function() {
+    setTimeout(function () {
       instance.addProfile('00000000-0000-0000-0000-000000000001', {
-        profile_image_url: 'http://texture-service.agni.lindenlab.com/89556747-24cb-43ed-920b-47caed15465f/320x240.jpg/'
+        profile_image_url: 'http://texture-service.agni.lindenlab.com/89556747-24cb-43ed-920b-47caed15465f/320x240.jpg/',
       });
     }, 1000);
+
   }
 
   render() {
@@ -87,7 +90,7 @@ class App extends Component {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" />
         <Tabs className="nav nav-tabs">
           <TabItem header="Local Chat">
-            <Chat title="Chat" messages={this.state.messages} onSendMessage={this.handleOnSendMessage} />
+            <Chat title="Local Chat" messages={this.state.messages} onSendMessage={this.handleOnSendMessage} />
           </TabItem>
           <TabItem header="Test 1">
             <Chat title="Null chat" messages={[]} />

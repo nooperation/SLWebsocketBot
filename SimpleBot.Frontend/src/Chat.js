@@ -4,6 +4,21 @@ import SampleSession from './Samples.js';
 const DEFUALT_PROFILE_IMAGE = "http://texture-service.agni.lindenlab.com/4235acd5-6726-caa7-fe26-60c965992a63/320x240.jpg/";
 
 class ChatItem extends Component {
+  constructor() {
+    super();
+
+    this.revision = 0;
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.message.revision != this.revision) {
+      this.revision = nextProps.message.revision;
+      return true;
+    }
+
+    return false;
+  }
+
   render() {
     return (
       <div className={"chat-item chat-message-type-" + this.props.message.message_type }>
@@ -18,7 +33,7 @@ class ChatItem extends Component {
   }
 }
 
-class ChatHeader extends Component {
+class ChatHeader extends React.PureComponent {
   render() {
     return (
       <header className="chat-header">
@@ -68,7 +83,7 @@ class ChatContent extends Component {
   }
 }
 
-class ChatInput extends Component {
+class ChatInput extends React.PureComponent {
   constructor() {
     super();
     this.state = {
