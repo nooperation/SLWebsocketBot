@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import SampleSession from './Samples.js';
 
 const DEFUALT_PROFILE_IMAGE = "http://texture-service.agni.lindenlab.com/4235acd5-6726-caa7-fe26-60c965992a63/320x240.jpg/";
 
@@ -11,7 +10,7 @@ class ChatItem extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.message.revision != this.revision) {
+    if (nextProps.message.revision !== this.revision) {
       this.revision = nextProps.message.revision;
       return true;
     }

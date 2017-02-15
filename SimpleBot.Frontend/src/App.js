@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SampleSession from './Samples.js';
+//import SampleSession from './Samples.js';
 import Chat from './Chat.js';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -13,17 +13,25 @@ class App extends Component {
       socket: null,
       messages: [],
       profiles: [],
+      chat_sessions: {}
     }
 
     this.handleOnSendMessage = this.handleOnSendMessage.bind(this);
+    this.handleOnTabClosed = this.handleOnTabClosed.bind(this);
   }
 
-  addChatMessage(name, message, time, uuid, message_type, profile_image_url, profile_url) {
+  addChatMessage(chat_session_name, name, message, time, uuid, message_type, profile_image_url, profile_url) {
     if (uuid in this.state.profiles) {
       profile_image_url = this.state.profiles[uuid].profile_image_url;
     }
-    this.setState((state) => {
-      state.messages.push({
+    this.setState(state => {
+      if (chat_session_name in state.chat_sessions === false) {
+        state.chat_sessions[chat_session_name] = {
+          header: chat_session_name,
+          messages: []
+        }
+      }
+      state.chat_sessions[chat_session_name].messages.push({
         name: name,
         message: message,
         date: time,
@@ -65,14 +73,14 @@ class App extends Component {
 
   componentDidMount() {
     for (var i = 0; i < 100; i += 2) {
-      this.addChatMessage('First.Person', (i + 0) + '  Hello world!', '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000000', 'Agent', null, '#');
-      this.addChatMessage('Second.Person', (i + 1) + '  Another message from a different person', '2017-02-06T21:42:55.0000000-05:00', '00000000-0000-0000-0000-000000000001', 'Agent', null, '#');
+      this.addChatMessage("Local Chat", 'First.Person', (i + 0) + '  Hello world!', '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000000', 'Agent', null, '#');
+      this.addChatMessage("Local Chat", 'Second.Person', (i + 1) + '  Another message from a different person', '2017-02-06T21:42:55.0000000-05:00', '00000000-0000-0000-0000-000000000001', 'Agent', null, '#');
     }
 
     var instance = this;
     var spam_counter = 0;
     setInterval(function () {
-      instance.addChatMessage('Another.Person', spam_counter + ' | ' + Math.random(), '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000003', 'Agent', null, '#');
+      instance.addChatMessage("Local Chat 2", 'Another.Person', spam_counter + ' | ' + Math.random(), '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000003', 'Agent', null, '#');
       ++spam_counter;
     }, 1000);
 
@@ -84,20 +92,27 @@ class App extends Component {
 
   }
 
+  handleOnTabClosed(chat_session_name) {
+    this.setState(state => {
+      delete state.chat_sessions[chat_session_name];
+    });
+  }
+
   render() {
     return (
       <div className="App">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" />
-        <Tabs className="nav nav-tabs">
-          <TabItem header="Local Chat">
-            <Chat title="Local Chat" messages={this.state.messages} onSendMessage={this.handleOnSendMessage} />
-          </TabItem>
-          <TabItem header="Test 1">
-            <Chat title="Null chat" messages={[]} />
-          </TabItem>
-          <TabItem header="Test 2">
-            <h2>Test 2</h2>
-          </TabItem>
+        <Tabs className="nav nav-tabs" onTabClosed={this.handleOnTabClosed} >
+          {
+            Object.keys(this.state.chat_sessions).map(key => {
+              const item = this.state.chat_sessions[key];
+              return (
+                <TabItem header={item.header} key={key}>
+                  <Chat title={item.header} messages={item.messages} onSendMessage={this.handleOnSendMessage} />
+                </TabItem>
+              );
+            })
+          }
         </Tabs>
       </div>
     );

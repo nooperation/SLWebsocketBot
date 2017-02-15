@@ -1,0 +1,10 @@
+
+.tab-header-close {
+  color: #dd3333;
+  margin-left: 10px;
+}
+
+li.inactive > a.tab-header-title {
+    background-color: #dedede !important;
+    color: #000000;
+}

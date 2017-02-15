@@ -1,3 +1,4 @@
+/*
 var SampleSession = [
   {"MessageType":"Init","ClientName":"Vuuka Resident","ClientId":{"Guid":"01a6e5bc-0160-436e-bac6-f0efb2638017"},"CurrentSimName":null,"CurrentSimID":{"Guid":"00000000-0000-0000-0000-000000000000"}},
   {"MessageType":"InstantMessage","IM":{"FromAgentID":{"Guid":"0de266c4-8bbe-4ba5-9217-20d22d04f36e"},"FromAgentName":"!","ToAgentID":{"Guid":"01a6e5bc-0160-436e-bac6-f0efb2638017"},"ParentEstateID":1,"RegionID":{"Guid":"36f86107-8c04-49a1-85e4-f2e94624c606"},"Position":{"X":77.8297,"Y":225.692,"Z":22.451},"Dialog":"MessageFromObject","GroupIM":false,"IMSessionID":{"Guid":"f545bfc6-1141-761d-b7d8-19c75ce82cc7"},"Timestamp":"0001-01-01T00:00:00","Message":"Ⓛondon City. http://mainlandlondon.blogspot.com\n\n☆ Don't accept gifts from strangers - Hit the decline button.  Lots of cool and safe things available in the freebie shop","Offline":"Online","BinaryBucket":"TG9uZG9uJTIwQ2l0eS83Ny8yMjUvMjIA"}},
@@ -46,4 +47,4 @@ var SampleSession = [
   {"MessageType":"Chat","FromName":"Morellocherry Raymaker","Message":"thank goodness","SourceId":{"Guid":"8ee11f1e-ceff-43f3-9c0f-d89aaa3b7ced"},"OwnerId":{"Guid":"8ee11f1e-ceff-43f3-9c0f-d89aaa3b7ced"},"Type":"Normal","SourceType":"Agent","Time":"2017-02-06T20:05:24.4311325-05:00"},
 ];
 
-export default SampleSession;
+export default SampleSession;*/
