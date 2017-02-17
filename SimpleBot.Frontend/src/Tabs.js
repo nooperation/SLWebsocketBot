@@ -40,8 +40,16 @@ export class Tabs extends Component {
         <ul className="nav nav-tabs">
           {
             this.props.children.map((item, index) => {
+              var class_name = "tab-header ";
+              if (index === this.state.active_child_index) {
+                class_name += " active";
+              }
+              else {
+                class_name += " inactive";
+              }
+
               return (
-                <li className="tab-header" className={(index === this.state.active_child_index) ? 'active' : 'inactive'} key={index}>
+                <li className={class_name} key={index}>
                   <a className="tab-header-title" href="#" onClick={() => this.handleOnClick(index)}>
                     {item.props.header}
                     <a href="#" onClick={() => this.handleCloseTab(index)}><i className="tab-header-close fa fa-times"></i></a>

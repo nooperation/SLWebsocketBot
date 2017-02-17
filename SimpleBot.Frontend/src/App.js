@@ -3,7 +3,10 @@ import React, { Component } from 'react';
 import Chat from './Chat.js';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Tabs, TabItem } from './Tabs.js';
+import { TabItem } from './Tabs.js';
+import { ChatTabs } from './ChatTabs.js';
+
+const UUID_ZERO = '00000000-0000-0000-0000-000000000000';
 
 class App extends Component {
   constructor() {
@@ -11,13 +14,16 @@ class App extends Component {
 
     this.state = {
       socket: null,
-      messages: [],
       profiles: [],
       chat_sessions: {}
     }
 
     this.handleOnSendMessage = this.handleOnSendMessage.bind(this);
     this.handleOnTabClosed = this.handleOnTabClosed.bind(this);
+  }
+
+  addDebugMessage(message) {
+    this.addChatMessage("Debug", "SimpleBot", message, Date.now(), UUID_ZERO, 'Debug', '', '');
   }
 
   addChatMessage(chat_session_name, name, message, time, uuid, message_type, profile_image_url, profile_url) {
@@ -51,19 +57,17 @@ class App extends Component {
   }
 
   updateMessagesInState(uuid, state) {
-    var messages = state.messages.slice(0);
-    for (var i = 0; i < messages.length; ++i) {
-      if (messages[i].uuid === uuid) {
-        messages[i].profile_image_url = this.state.profiles[uuid].profile_image_url;
-        messages[i].revision++;
+    Object.keys(state.chat_sessions).map(key => {
+      var chat_session = state.chat_sessions[key];
+      var messages = chat_session.messages.slice(0);
+      for (var i = 0; i < messages.length; ++i) {
+        if (messages[i].uuid === uuid) {
+          messages[i].profile_image_url = this.state.profiles[uuid].profile_image_url;
+          messages[i].revision++;
+        }
       }
-    }
-    state.messages = messages;
-  }
-
-  updateMessages(uuid) {
-    this.setState(state => {
-      this.updateMessagesInState(uuid, state);
+      chat_session.messages = messages;
+      return key;
     });
   }
 
@@ -72,6 +76,8 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.addDebugMessage("ComponentDidMount");
+
     for (var i = 0; i < 100; i += 2) {
       this.addChatMessage("Local Chat", 'First.Person', (i + 0) + '  Hello world!', '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000000', 'Agent', null, '#');
       this.addChatMessage("Local Chat", 'Second.Person', (i + 1) + '  Another message from a different person', '2017-02-06T21:42:55.0000000-05:00', '00000000-0000-0000-0000-000000000001', 'Agent', null, '#');
@@ -102,7 +108,7 @@ class App extends Component {
     return (
       <div className="App">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" />
-        <Tabs className="nav nav-tabs" onTabClosed={this.handleOnTabClosed} >
+        <ChatTabs className="nav nav-tabs" onTabClosed={this.handleOnTabClosed} >
           {
             Object.keys(this.state.chat_sessions).map(key => {
               const item = this.state.chat_sessions[key];
@@ -113,7 +119,7 @@ class App extends Component {
               );
             })
           }
-        </Tabs>
+        </ChatTabs>
       </div>
     );
   }

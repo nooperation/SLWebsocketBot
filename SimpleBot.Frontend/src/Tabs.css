@@ -5,6 +5,11 @@
 }
 
 li.inactive > a.tab-header-title {
-    background-color: #dedede !important;
-    color: #000000;
+  background-color: #dedede !important;
+  color: #000000;
+}
+
+li.unread-messages > a.tab-header-title {
+  color: #233dd7 !important;
+  font-weight: bold;
 }
