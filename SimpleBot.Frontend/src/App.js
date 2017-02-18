@@ -95,7 +95,7 @@ class App extends Component {
       this.addChatMessage("Local Chat", 'Second.Person', (i + 1) + '  Another message from a different person', '2017-02-06T21:42:55.0000000-05:00', '00000000-0000-0000-0000-000000000001', 'Agent', null, '#');
     }
 
-    this.selectTab("Local Chatt");
+    this.selectTab("Local Chat");
     var instance = this;
     var spam_counter = 0;
     setInterval(function () {
