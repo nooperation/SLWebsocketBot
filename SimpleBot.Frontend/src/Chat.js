@@ -61,7 +61,6 @@ class ChatContent extends Component {
   }
 
   componentDidUpdate() {
-    console.log("ComponentDidUpdate");
     if (this.chat_list && this.is_autoscroll_enabled) {
       this.scrollToBottom();
     }
