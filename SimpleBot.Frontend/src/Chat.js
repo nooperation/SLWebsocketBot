@@ -52,9 +52,18 @@ class ChatContent extends Component {
     this.is_autoscroll_enabled = true;
   }
 
+  scrollToBottom() {
+    this.chat_list.scrollTop = this.chat_list.scrollHeight;
+  }
+
+  componentDidMount() {
+    this.scrollToBottom();
+  }
+
   componentDidUpdate() {
+    console.log("ComponentDidUpdate");
     if (this.chat_list && this.is_autoscroll_enabled) {
-      this.chat_list.scrollTop = this.chat_list.scrollHeight;
+      this.scrollToBottom();
     }
   }
 
