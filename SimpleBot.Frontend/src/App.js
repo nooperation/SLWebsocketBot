@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 //import SampleSession from './Samples.js';
-import Chat from './Chat.js';
+import { Chat, DEFUALT_PROFILE_IMAGE } from './Chat.js';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import { TabItem } from './Tabs.js';
@@ -13,7 +13,6 @@ class App extends Component {
     super();
 
     this.state = {
-      socket: null,
       profiles: [],
       chat_sessions: {}
     }
@@ -21,16 +20,75 @@ class App extends Component {
     this.handleOnSendMessage = this.handleOnSendMessage.bind(this);
     this.handleOnTabClosed = this.handleOnTabClosed.bind(this);
     this.handleOnTabSelected = this.handleOnTabSelected.bind(this);
+
+    this.startWebsocket = this.startWebsocket.bind(this);
+
+    this.socket = null;
+
+    setTimeout(this.startWebsocket, 1);
   }
+
+  startWebsocket() {
+    var instance = this;
+
+    instance.addDebugMessage('Connecting...');
+    instance.socket = new WebSocket('ws://127.0.0.1:55000/Bot');
+
+    instance.socket.onopen = function (event) {
+      instance.addDebugMessage('Connected');
+    };
+
+    instance.socket.onerror = function (event) {
+      instance.addDebugMessage('Failed to connect');
+      setTimeout(instance.startWebsocket, 1000);
+    };
+
+    instance.socket.close = function (event) {
+      instance.addDebugMessage('Close: ' + event.message);
+    };
+
+    instance.socket.onmessage = function (event) {
+      try {
+        var message = JSON.parse(event.data);
+        instance.handleNetworkMessage(message);
+      }
+      catch (ex) {
+        instance.addDebugMessage('Failed to parse message.\n Exception: ' + ex + '\n Message: ' + event.data);
+      }
+    };
+  };
 
   addDebugMessage(message) {
     this.addChatMessage("Debug", "SimpleBot", message, Date.now(), UUID_ZERO, 'Debug', '', '');
   }
 
-  addChatMessage(chat_session_name, name, message, time, uuid, message_type, profile_image_url, profile_url) {
-    if (uuid in this.state.profiles) {
-      profile_image_url = this.state.profiles[uuid].profile_image_url;
+  requestProfile(uuid) {
+    if (!this.socket) {
+      return;
     }
+
+    var json_data = JSON.stringify({
+      MessageType: 'ProfileRequest',
+      Payload: {
+        AgentId: uuid
+      }
+    });
+    this.socket.send(json_data);
+  }
+
+  getProfileImage(uuid) {
+    if (uuid in this.state.profiles) {
+      return this.state.profiles[uuid].profile_image_url;
+    }
+    else {
+      this.requestProfile(uuid);
+      return DEFUALT_PROFILE_IMAGE;
+    }
+  }
+
+  addChatMessage(chat_session_name, name, message, time, uuid, message_type, profile_image_url, profile_url) {
+    profile_image_url = this.getProfileImage(uuid);
+
     this.setState(state => {
       if (chat_session_name in state.chat_sessions === false) {
         state.chat_sessions[chat_session_name] = {
@@ -84,30 +142,94 @@ class App extends Component {
   }
 
   handleOnSendMessage(message) {
-    alert('TODO: send "' + message + '"');
+    var json_data = JSON.stringify({
+      MessageType: 'ChatRequest',
+      Payload: {
+        Message: message,
+        ChatType: 'Normal',
+        Channel: 0
+      }
+    });
+    this.socket.send(json_data);
+  }
+
+  onChatMessage(message) {
+    this.addChatMessage("Local Chat", message.FromName, message.Message, message.Time, message.OwnerId.Guid, message.MessageType, '', '');
+  }
+
+  onProfileResponse(message) {
+    var profile_url;
+
+    if (message.ProfileImage.Guid == UUID_ZERO) {
+      profile_url = DEFUALT_PROFILE_IMAGE;
+    }
+    else {
+      profile_url = 'http://texture-service.agni.lindenlab.com/' + message.ProfileImage.Guid + '/320x240.jpg';
+    }
+
+    this.addProfile(message.AgentId.Guid, {
+      profile_image_url: profile_url
+    });
+  }
+
+  onInstantMessage(message) {
+    if (message.IM.Dialog === "MessageFromObject") {
+      this.addChatMessage("Local Chat", message.IM.FromAgentName, '[' + message.IM.Dialog + '] ' + message.IM.Message, message.IM.Timestamp, message.IM.FromAgentID.Guid, message.IM.Dialog, '', '');
+    }
+    else {
+      this.addChatMessage(message.IM.FromAgentName, message.IM.FromAgentName, '[' + message.IM.Dialog + '] ' +  message.IM.Message, message.IM.Timestamp, message.IM.FromAgentID.Guid, message.IM.Dialog, '', '');
+    }
+  }
+
+  handleNetworkMessage(message) {
+    this.addDebugMessage(JSON.stringify(message));
+
+    switch (message.MessageType) {
+      case "Init":
+        break;
+      case "Chat":
+        this.onChatMessage(message);
+        break;
+      case "ProfileResponse":
+        this.onProfileResponse(message);
+        break;
+      case "InstantMessage":
+        this.onInstantMessage(message);
+        break;
+      default:
+        break;
+    }
   }
 
   componentDidMount() {
-    this.addDebugMessage("ComponentDidMount");
+    // this.addDebugMessage("ComponentDidMount");
 
-    for (var i = 0; i < 100; i += 2) {
-      this.addChatMessage("Local Chat", 'First.Person', (i + 0) + '  Hello world!', '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000000', 'Agent', null, '#');
-      this.addChatMessage("Local Chat", 'Second.Person', (i + 1) + '  Another message from a different person', '2017-02-06T21:42:55.0000000-05:00', '00000000-0000-0000-0000-000000000001', 'Agent', null, '#');
-    }
+    // this.addChatMessage("Local Chat", 'First.Person', 'Hello world!', '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000000', 'Agent', null, '#');
+    // this.addChatMessage("Local Chat", 'Second.Person', 'Another message from a different person', '2017-02-06T21:42:55.0000000-05:00', '00000000-0000-0000-0000-000000000001', 'Agent', null, '#');
 
-    this.selectTab("Local Chat");
-    var instance = this;
-    var spam_counter = 0;
-    setInterval(function () {
-      instance.addChatMessage("Local Chat 2", 'Another.Person', spam_counter + ' | ' + Math.random(), '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000003', 'Agent', null, '#');
-      ++spam_counter;
-    }, 1000);
+    // this.selectTab("Local Chat");
+    // var instance = this;
+    // var spam_counter = 0;
+    // setInterval(function () {
+    //   instance.addChatMessage("Local Chat 2", 'Another.Person', spam_counter + ' | ' + Math.random(), '2017-02-06T21:42:54.7443608-05:00', '00000000-0000-0000-0000-000000000003', 'Agent', null, '#');
+    //   ++spam_counter;
+    // }, 1000);
 
-    setTimeout(function () {
-      instance.addProfile('00000000-0000-0000-0000-000000000001', {
-        profile_image_url: 'http://texture-service.agni.lindenlab.com/89556747-24cb-43ed-920b-47caed15465f/320x240.jpg/',
-      });
-    }, 1000);
+    // var num_samples = SampleSession.length;
+    // var current_sample = 0;
+    // setInterval(function () {
+    //   instance.handleNetworkMessage(SampleSession[current_sample]);
+    //   ++current_sample
+    //   if (current_sample >= num_samples) {
+    //     current_sample = 0;
+    //   }
+    // }, 1000);
+
+    // setTimeout(function () {
+    //   instance.addProfile('00000000-0000-0000-0000-000000000001', {
+    //     profile_image_url: 'http://texture-service.agni.lindenlab.com/89556747-24cb-43ed-920b-47caed15465f/320x240.jpg/',
+    //   });
+    // }, 1000);
 
   }
 
@@ -146,7 +268,7 @@ class App extends Component {
     return (
       <div className="App">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" />
-        <ChatTabs className="nav nav-tabs" onTabClosed={this.handleOnTabClosed} onTabSelected={this.handleOnTabSelected} selectedTab={this.state.selected_chat_session_name}>
+        <ChatTabs onTabClosed={this.handleOnTabClosed} onTabSelected={this.handleOnTabSelected} selectedTab={this.state.selected_chat_session_name}>
           {
             Object.keys(this.state.chat_sessions).map(key => {
               const item = this.state.chat_sessions[key];

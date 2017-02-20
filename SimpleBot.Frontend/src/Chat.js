@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const DEFUALT_PROFILE_IMAGE = "http://texture-service.agni.lindenlab.com/4235acd5-6726-caa7-fe26-60c965992a63/320x240.jpg/";
+export const DEFUALT_PROFILE_IMAGE = "http://texture-service.agni.lindenlab.com/4235acd5-6726-caa7-fe26-60c965992a63/320x240.jpg/";
 
 class ChatItem extends Component {
   constructor() {
@@ -133,7 +133,7 @@ class ChatInput extends React.PureComponent {
   }
 }
 
-class Chat extends Component {
+export class Chat extends Component {
   render() {
     return (
       <div className="chat-container wrapper">
@@ -144,5 +144,3 @@ class Chat extends Component {
     );
   }
 }
-
-export default Chat;

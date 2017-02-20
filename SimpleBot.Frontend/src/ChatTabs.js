@@ -9,7 +9,7 @@ export class ChatTabs extends Tabs {
     const selected_tab_key = this.props.selectedTab;
 
     return (
-      <div>
+      <div className="chat-tabs">
         <ul className="nav nav-tabs">
           {
             this.props.children.map((item, index) => {

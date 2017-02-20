@@ -5,8 +5,20 @@
   font-weight: 400;
   overflow-x: hidden;
   overflow-y: auto;
+
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top: 0px;
 }
 
+
+/*
+Chat Item
+
+  [Profile Image] [Message (Horizontal Stretch)] [Date]
+*/
 .chat-item {
   display: flex;
   flex-flow: row ;
@@ -15,11 +27,6 @@
 
   padding: 5px;
 }
-
-.chat-item > * {
-  margin: 5px;
-}
-
 .chat-item-image {
   flex: 0;
 
@@ -30,7 +37,6 @@
   border: 1px solid black;
   box-shadow: 2px 2px #555555;
 }
-
 .chat-item-message-container {
   flex: 1 auto;
 
@@ -40,26 +46,41 @@
 
   text-align: left;
 }
-
 .chat-item-extras {
   flex: 0;
 }
 
-.chat-container {
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  align-content: center;
-  align-items: stretch;
-
-  height: 512px;
-  width: 100%;
+.chat-item > * {
+  margin: 5px;
 }
 
-.chat-header {
+
+/*
+Chat tabs + tab content
+
+  [Tabs]
+  [Content (Vertical Stretch)]
+*/
+.chat-tabs {
+  display: flex;
+  flex-flow: column ;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: stretch;
+  align-items: stretch;
+
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+}
+.nav-tabs {
+  order: 0;
   flex: 0;
-  text-align: left;
-  padding: 5px;
+}
+.tab-item-contents {
+  order: 1;
+  flex: 1;
+  min-height: 0;
 }
 
 .chat-header > .fa, .chat-header-title {
@@ -70,12 +91,37 @@
   padding-right: 5px;
 }
 
+
+/*
+Main chat container
+
+  [Header]
+  [Chat Items (Vertical stretch)]
+  [Input]
+*/
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: stretch;
+
+  height: 100%;
+}
+.chat-header {
+  flex: 0 0 auto;
+
+  text-align: left;
+  padding: 5px;
+}
 .chat-container-body {
-  flex: 1;
+  flex: 1 1 100%;
+  min-height: 0;
+
   overflow-y: scroll;
   background: #f5f5f5;
 }
-
 .chat-container-footer {
-  flex: 0;
+  flex: 0 0 auto;
 }
