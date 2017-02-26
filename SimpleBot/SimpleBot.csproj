@@ -80,6 +80,8 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="LoginDetails.cs" />
+    <Compile Include="Managers\GroupNameRequestManager.cs" />
+    <Compile Include="Managers\LocalAvatarManager.cs" />
     <Compile Include="Managers\ManagerBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

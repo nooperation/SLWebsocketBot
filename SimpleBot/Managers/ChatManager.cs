@@ -12,7 +12,6 @@ namespace SimpleBot.Managers
   class ChatManager : ManagerBase
   {
     public LinkedList<IServerMessage> ChatHistory { get; protected set; } = new LinkedList<IServerMessage>();
-    public LinkedList<IServerMessage> InstantMessageHistory { get; protected set; } = new LinkedList<IServerMessage>();
     public int MaxChatHistoryLength => 100;
 
     public override bool Init()

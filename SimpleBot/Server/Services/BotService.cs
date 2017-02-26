@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OpenMetaverse;
 using SimpleBot.Server.ClientMessages;
 using SimpleBot.Server.ServerMessages;
 using System;
@@ -20,6 +21,11 @@ namespace SimpleBot.Server.Services
     {
       base.OnOpen();
 
+      if(Program.Instance.Client.Network.Connected == false) {
+        this.Context.WebSocket.Close();
+        Console.WriteLine("Client connected, but we're not logged in yet");
+        return;
+      }
       Console.WriteLine("Client connected");
 
       var instance = Program.Instance;
@@ -54,7 +60,6 @@ namespace SimpleBot.Server.Services
 
       try
       {
-
         var message = JObject.Parse(json_data);
         var message_type_string = message["MessageType"].ToString();
         var message_type = (ClientMessageType)Enum.Parse(typeof(Server.ClientMessages.ClientMessageType), message_type_string);
@@ -62,6 +67,14 @@ namespace SimpleBot.Server.Services
 
         switch (message_type)
         {
+          case ClientMessageType.GroupNameRequest:
+          {
+            var request = JsonConvert.DeserializeObject<GroupNamesRequestMessage>(payload.ToString());
+            var group_ids = request.GroupIds.Select<string, UUID>(item => new UUID(item)).ToList();
+
+            Program.Instance.GroupNameRequestManager.RequestGroupNames(this.ID, group_ids);
+            break;
+          }
           case ClientMessageType.ProfileRequest:
           {
             var profile_request = JsonConvert.DeserializeObject<ProfileRequestMessage>(payload.ToString());

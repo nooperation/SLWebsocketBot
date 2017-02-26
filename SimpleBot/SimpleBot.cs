@@ -17,6 +17,8 @@ namespace SimpleBot
     public Managers.AvatarPropertiesRequestManager AvatarPropertiesRequestManager { get; protected set; }
     public Managers.ChatManager ChatManager { get; protected set; }
     public Managers.ConnectionManager ConnectionManager { get; protected set; }
+    public Managers.LocalAvatarManager LocalAvatarManager { get; set; }
+    public Managers.GroupNameRequestManager GroupNameRequestManager { get; set; }
 
     public void Run()
     {
@@ -28,10 +30,13 @@ namespace SimpleBot
       AvatarPropertiesRequestManager = new Managers.AvatarPropertiesRequestManager();
       ChatManager  = new Managers.ChatManager();
       ConnectionManager  = new Managers.ConnectionManager();
+      LocalAvatarManager = new Managers.LocalAvatarManager();
 
       ConnectionManager.Init();
       ChatManager.Init();
       AvatarPropertiesRequestManager.Init();
+      LocalAvatarManager.Init();
+      GroupNameRequestManager.Init();
 
       WebsocketBackend.Instance.Init(55000);
     }
@@ -45,7 +50,9 @@ namespace SimpleBot
 
       return AvatarPropertiesRequestManager.Poll() &&
              ChatManager.Poll() &&
-             ConnectionManager.Poll();
+             ConnectionManager.Poll() &&
+             LocalAvatarManager.Poll() &&
+             GroupNameRequestManager.Poll();
     }
   }
 }

@@ -32,16 +32,16 @@ namespace SimpleBot.Managers
     public override bool Poll()
     {
       var time_since_last_expiration_check = DateTime.Now - LastExpirationCheck;
-      if(time_since_last_expiration_check.TotalMilliseconds >= ExpirationTimeInMilliseconds)
+      if (time_since_last_expiration_check.TotalMilliseconds >= ExpirationTimeInMilliseconds)
       {
+        var requests_to_remove = new List<UUID>();
+
         lock (PendingRequests)
         {
-          var requests_to_remove = new List<UUID>();
-
           foreach (var request in PendingRequests)
           {
             request.Value.RemoveAll(item => (DateTime.Now - item.RequestTime).TotalMilliseconds > ExpirationTimeInMilliseconds);
-            if(request.Value.Count == 0)
+            if (request.Value.Count == 0)
             {
               requests_to_remove.Add(request.Key);
             }
@@ -50,17 +50,22 @@ namespace SimpleBot.Managers
           foreach (var request_key in requests_to_remove)
           {
             PendingRequests.Remove(request_key);
-            Console.WriteLine($"Dropping request {request_key}");
           }
+        }
+
+        foreach (var request_key in requests_to_remove)
+        {
+          Console.WriteLine($"Dropping request {request_key}");
         }
       }
 
       return true;
     }
- 
+
     public void RequestAvatarProperties(string session_id, UUID avatar_id)
     {
-      var new_request = new ClientRequest() {
+      var new_request = new ClientRequest()
+      {
         SessionId = session_id,
         AvatarId = avatar_id,
         RequestTime = DateTime.Now
@@ -71,7 +76,7 @@ namespace SimpleBot.Managers
         if (PendingRequests.ContainsKey(avatar_id))
         {
           var existing_request = PendingRequests[avatar_id];
-          if(existing_request.FindIndex(n => n.SessionId == session_id) == -1)
+          if (existing_request.FindIndex(n => n.SessionId == session_id) == -1)
           {
             existing_request.Add(new_request);
             Console.WriteLine($"Appending request for avatar properties for {avatar_id} by client {session_id}");

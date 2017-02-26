@@ -18,8 +18,10 @@ namespace SimpleBot.Server.ServerMessages
     InstantMessage,
     Chat,
     ProfileResponse,
+    GroupNameResponse,
     SimStatsResponse,
     AvatarListResponse,
+    NearbyAgentsDelta
   }
 
   public interface IServerMessage
@@ -52,6 +54,14 @@ namespace SimpleBot.Server.ServerMessages
     public ServerMessageType MessageType => ServerMessageType.InstantMessage;
 
     public OpenMetaverse.InstantMessage IM { get; internal set; }
+  }
+
+  class NearbyAgentsDelta : IServerMessage
+  {
+    public ServerMessageType MessageType => ServerMessageType.InstantMessage;
+
+    public List<UUID> Added { get; set; }
+    public List<UUID> Removed { get; set; }
   }
 
   class DisconnectedMessage : IServerMessage
@@ -101,6 +111,14 @@ namespace SimpleBot.Server.ServerMessages
     public UUID ProfileImage { get; set; }
     public ProfileFlags Flags { get; set; }
     public string ProfileURL { get; set; }
+  }
+
+  public class GroupNameResponseMessage : IServerMessage
+  {
+    public ServerMessageType MessageType => ServerMessageType.GroupNameResponse;
+
+    public UUID Id { get; set; }
+    public string Name { get; set; }
   }
 
   public class SimStatsResponseMessage : IServerMessage

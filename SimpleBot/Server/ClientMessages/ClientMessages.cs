@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static OpenMetaverse.NetworkManager;
 
 namespace SimpleBot.Server.ClientMessages
 {
@@ -14,6 +13,7 @@ namespace SimpleBot.Server.ClientMessages
   {
     Unknown,
     ProfileRequest,
+    GroupNameRequest,
     RegionStatsRequest,
     AvatarListRequest,
     ChatRequest,
@@ -22,6 +22,11 @@ namespace SimpleBot.Server.ClientMessages
   public class ProfileRequestMessage
   {
     public string AgentId { get; set; }
+  }
+
+  public class GroupNamesRequestMessage
+  {
+    public List<string> GroupIds { get; set; }
   }
 
   public class ChatRequestMessage
