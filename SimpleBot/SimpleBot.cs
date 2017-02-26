@@ -1,4 +1,5 @@
 ﻿using OpenMetaverse;
+using SimpleBot.Managers;
 using SimpleBot.Server;
 using System;
 using System.Collections.Generic;
@@ -14,30 +15,49 @@ namespace SimpleBot
     public Config Config { get; protected set; }
     public GridClient Client { get; protected set; }
 
-    public Managers.AvatarPropertiesRequestManager AvatarPropertiesRequestManager { get; protected set; }
-    public Managers.ChatManager ChatManager { get; protected set; }
-    public Managers.ConnectionManager ConnectionManager { get; protected set; }
-    public Managers.LocalAvatarManager LocalAvatarManager { get; set; }
-    public Managers.GroupNameRequestManager GroupNameRequestManager { get; set; }
+    public enum ImplementedManagers
+    {
+      AvatarPropertiesRequestManager = 0,
+      ChatManager,
+      ConnectionManager,
+      LocalAvatarManager,
+      GroupNameRequestManager
+    }
+
+    public Dictionary<ImplementedManagers, ManagerBase> Managers { get; protected set; }
+    private List<ManagerBase> ManagerList { get; set; }
+
+    public AvatarPropertiesRequestManager AvatarPropertiesRequestManager => Managers[ImplementedManagers.AvatarPropertiesRequestManager] as AvatarPropertiesRequestManager;
+    public ChatManager ChatManager => Managers[ImplementedManagers.ChatManager] as ChatManager;
+    public ConnectionManager ConnectionManager => Managers[ImplementedManagers.ConnectionManager] as ConnectionManager;
+    public LocalAvatarManager LocalAvatarManager => Managers[ImplementedManagers.LocalAvatarManager] as LocalAvatarManager;
+    public GroupNameRequestManager GroupNameRequestManager => Managers[ImplementedManagers.GroupNameRequestManager] as GroupNameRequestManager;
 
     public void Run()
     {
+      Managers = new Dictionary<ImplementedManagers, ManagerBase>();
+      ManagerList = new List<ManagerBase>();
+
       Config = new Config("SimpleBot");
       Config.Load();
 
       Client = new GridClient();
 
-      AvatarPropertiesRequestManager = new Managers.AvatarPropertiesRequestManager();
-      ChatManager  = new Managers.ChatManager();
-      ConnectionManager  = new Managers.ConnectionManager();
-      LocalAvatarManager = new Managers.LocalAvatarManager();
-      GroupNameRequestManager = new Managers.GroupNameRequestManager();
+      var enum_values = Enum.GetValues(typeof(ImplementedManagers));
+      foreach (var value in enum_values)
+      {
+        var type_name = Enum.GetName(typeof(ImplementedManagers), value);
 
-      ConnectionManager.Init();
-      ChatManager.Init();
-      AvatarPropertiesRequestManager.Init();
-      LocalAvatarManager.Init();
-      GroupNameRequestManager.Init();
+        var type = Type.GetType("SimpleBot.Managers." + type_name);
+        if (type != null)
+        {
+          var manager_instance = Activator.CreateInstance(type) as ManagerBase;
+          Managers.Add((ImplementedManagers)value, manager_instance);
+          ManagerList.Add(manager_instance);
+        }
+      }
+
+      ManagerList.ForEach(manager => manager.Init());
 
       WebsocketBackend.Instance.Init(55000);
     }
@@ -49,20 +69,12 @@ namespace SimpleBot
         return false;
       }
 
-      return AvatarPropertiesRequestManager.Poll() &&
-             ChatManager.Poll() &&
-             ConnectionManager.Poll() &&
-             LocalAvatarManager.Poll() &&
-             GroupNameRequestManager.Poll();
+      return ManagerList.All(manager => manager.Poll());
     }
 
     public void Shutdown()
     {
-      ConnectionManager.Shutdown();
-      ChatManager.Shutdown();
-      AvatarPropertiesRequestManager.Shutdown();
-      LocalAvatarManager.Shutdown();
-      GroupNameRequestManager.Shutdown();
+      ManagerList.ForEach(manager => manager.Shutdown());
     }
   }
 }
