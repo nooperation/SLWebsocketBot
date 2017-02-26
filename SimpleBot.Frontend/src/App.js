@@ -97,20 +97,24 @@ class App extends Component {
     }
   }
 
+  getOrCreateChatSessionInState(chat_session_name, state) {
+    if (!(chat_session_name in state.chat_sessions)) {
+      state.chat_sessions[chat_session_name] = {
+        header: chat_session_name,
+        last_read_message: 0,
+        messages: [],
+        users: []
+      }
+    }
+
+    return state.chat_sessions[chat_session_name];
+  }
+
   addChatMessage(chat_session_name, name, message, time, uuid, message_type, profile_image_url, profile_url) {
     profile_image_url = this.getProfileImage(uuid);
 
     this.setState(state => {
-      if (chat_session_name in state.chat_sessions === false) {
-        state.chat_sessions[chat_session_name] = {
-          header: chat_session_name,
-          last_read_message: 0,
-          messages: [],
-          users: []
-        }
-      }
-
-      var chat_session = state.chat_sessions[chat_session_name];
+      var chat_session = this.getOrCreateChatSessionInState(chat_session_name, state);
       chat_session.messages.push({
         name: name,
         message: message,
@@ -140,7 +144,7 @@ class App extends Component {
 
   updateMessagesInState(uuid, state) {
     Object.keys(state.chat_sessions).map(key => {
-      var chat_session = state.chat_sessions[key];
+      var chat_session = this.getOrCreateChatSessionInState(key, state);
       var messages = chat_session.messages.slice(0);
       for (var i = 0; i < messages.length; ++i) {
         if (messages[i].uuid === uuid) {
@@ -199,7 +203,7 @@ class App extends Component {
 
   onAvatarListResponse(message) {
     this.setState(state => {
-      var chat_session = state.chat_sessions["Local Chat"];
+      var chat_session =  this.getOrCreateChatSessionInState("Local Chat", state);;
       const avatar_locations = message.AvatarLocations;
       for (var i = 0; i < avatar_locations.length; ++i) {
         chat_session.users.push({
@@ -269,7 +273,7 @@ class App extends Component {
 
   selectTabInState(chat_session_name, state) {
     if (chat_session_name in state.chat_sessions) {
-      var chat_session = state.chat_sessions[chat_session_name];
+      var chat_session = this.getOrCreateChatSessionInState(chat_session_name, state);
       chat_session.last_read_message = chat_session.messages.length;
     }
 
@@ -284,7 +288,9 @@ class App extends Component {
 
   handleOnTabClosed(chat_session_name) {
     this.setState(state => {
-      delete state.chat_sessions[chat_session_name];
+      if (chat_session_name in state.chat_sessions) {
+        delete state.chat_sessions[chat_session_name];
+      }
       const chat_session_names = Object.keys(this.state.chat_sessions);
       const next_selected_chat_session_name = chat_session_names.length > 0 ? chat_session_names[0] : null;
 
@@ -305,7 +311,7 @@ class App extends Component {
         <ChatTabs onTabClosed={this.handleOnTabClosed} onTabSelected={this.handleOnTabSelected} selectedTab={this.state.selected_chat_session_name}>
           {
             Object.keys(this.state.chat_sessions).map(key => {
-              const item = this.state.chat_sessions[key];
+              const item = this.getOrCreateChatSessionInState(key, this.state);
               return (
                 <TabItem header={item.header} lastReadMessage={item.last_read_message} totalMessages={item.messages.length} key={key}>
                   <Chat title={item.header} messages={item.messages} onSendMessage={this.handleOnSendMessage} users={item.users} />
