@@ -39,12 +39,11 @@ class App extends Component {
     };
 
     instance.socket.onerror = function (event) {
-      instance.addDebugMessage('Failed to connect');
-      setTimeout(instance.startWebsocket, 1000);
     };
 
-    instance.socket.close = function (event) {
-      instance.addDebugMessage('Close: ' + event.message);
+    instance.socket.onclose = function (event) {
+      instance.addDebugMessage('Connection closed');
+      setTimeout(instance.startWebsocket, 1000);
     };
 
     instance.socket.onmessage = function (event) {
@@ -60,6 +59,18 @@ class App extends Component {
 
   addDebugMessage(message) {
     this.addChatMessage("Debug", "SimpleBot", message, Date.now(), UUID_ZERO, 'Debug', '', '');
+  }
+
+  requestAvatarList() {
+    if (!this.socket) {
+      return;
+    }
+
+    var json_data = JSON.stringify({
+      MessageType: 'AvatarListRequest',
+      Payload: null
+    });
+    this.socket.send(json_data);
   }
 
   requestProfile(uuid) {
@@ -181,11 +192,21 @@ class App extends Component {
     }
   }
 
+  onInit(message) {
+    this.requestAvatarList();
+  }
+
+  onAvatarListResponse(message) {
+    this.setState(state => {
+    });
+  }
+
   handleNetworkMessage(message) {
     this.addDebugMessage(JSON.stringify(message));
 
     switch (message.MessageType) {
       case "Init":
+        this.onInit(message);
         break;
       case "Chat":
         this.onChatMessage(message);
@@ -195,6 +216,9 @@ class App extends Component {
         break;
       case "InstantMessage":
         this.onInstantMessage(message);
+        break;
+      case "AvatarListResponse":
+        this.onAvatarListResponse(message);
         break;
       default:
         break;
