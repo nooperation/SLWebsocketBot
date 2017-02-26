@@ -31,6 +31,7 @@ namespace SimpleBot
       ChatManager  = new Managers.ChatManager();
       ConnectionManager  = new Managers.ConnectionManager();
       LocalAvatarManager = new Managers.LocalAvatarManager();
+      GroupNameRequestManager = new Managers.GroupNameRequestManager();
 
       ConnectionManager.Init();
       ChatManager.Init();
@@ -53,6 +54,15 @@ namespace SimpleBot
              ConnectionManager.Poll() &&
              LocalAvatarManager.Poll() &&
              GroupNameRequestManager.Poll();
+    }
+
+    public void Shutdown()
+    {
+      ConnectionManager.Shutdown();
+      ChatManager.Shutdown();
+      AvatarPropertiesRequestManager.Shutdown();
+      LocalAvatarManager.Shutdown();
+      GroupNameRequestManager.Shutdown();
     }
   }
 }

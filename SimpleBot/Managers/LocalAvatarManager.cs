@@ -20,7 +20,13 @@ namespace SimpleBot.Managers
     // Todo: Ditch GridManager, move to poll for a more predictable flow
     private void Grid_CoarseLocationUpdate(object sender, CoarseLocationUpdateEventArgs e)
     {
-      if(e.Simulator == Program.Instance.Client.Network.CurrentSim)
+      var instance = Program.Instance;
+      if(instance.Client.Network.Connected == false || instance.Client.Network.CurrentSim == null)
+      {
+        return;
+      }
+
+      if(e.Simulator == instance.Client.Network.CurrentSim)
       {
         if(e.NewEntries.Count > 0 && e.RemovedEntries.Count > 0)
         {
