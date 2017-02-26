@@ -23,7 +23,7 @@ class ChatItem extends Component {
       <div className={"chat-item chat-message-type-" + this.props.message.message_type }>
         <img src={this.props.message.profile_image_url || DEFUALT_PROFILE_IMAGE} alt="headshot" className="chat-item-image" />
         <div className="chat-item-message-container">
-          <a className="chat-item-name" target="self" href={"https://my.secondlife.com/" + this.props.message.name}>{this.props.message.name}</a>
+          <a className="chat-item-name" target="self" href={"https://my.secondlife.com/" + this.props.message.name.replace(' Resident', '').replace(' ', '.')}>{this.props.message.name}</a>
           <p className="chat-item-message">{this.props.message.message}</p>
         </div>
         <small className="chat-item-extras">{this.props.message.date}</small>
