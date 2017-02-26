@@ -111,7 +111,18 @@ namespace SimpleBot.Server.Services
           case ClientMessageType.ChatRequest:
           {
             var chat_request = JsonConvert.DeserializeObject<ChatRequestMessage>(payload.ToString());
-            Program.Instance.Client.Self.Chat(chat_request.Message, chat_request.Channel, chat_request.ChatType);
+            if(chat_request.Message.StartsWith("/"))
+            {
+              if(chat_request.Message.ToLower().Trim() == "/home")
+              {
+                Program.Instance.Client.Self.GoHome();
+                break;
+              }
+            }
+            else
+            {
+              Program.Instance.Client.Self.Chat(chat_request.Message, chat_request.Channel, chat_request.ChatType);
+            }
             break;
           }
           default:

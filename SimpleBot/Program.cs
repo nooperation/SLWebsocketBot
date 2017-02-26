@@ -41,6 +41,10 @@ namespace SimpleBot
       catch (Exception ex)
       {
         Console.WriteLine("Exception: " + ex.Message);
+        if(_instance != null)
+        {
+          _instance.Shutdown();
+        }
         _instance = null;
       }
     }
