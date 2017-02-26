@@ -105,7 +105,8 @@ class App extends Component {
         state.chat_sessions[chat_session_name] = {
           header: chat_session_name,
           last_read_message: 0,
-          messages: []
+          messages: [],
+          users: []
         }
       }
 
@@ -198,6 +199,15 @@ class App extends Component {
 
   onAvatarListResponse(message) {
     this.setState(state => {
+      var chat_session = state.chat_sessions["Local Chat"];
+      const avatar_locations = message.AvatarLocations;
+      for (var i = 0; i < avatar_locations.length; ++i) {
+        chat_session.users.push({
+          name: avatar_locations[i].FirstName + ' ' + avatar_locations[i].LastName,
+          uuid: avatar_locations[i].Id,
+          location: avatar_locations[i].Location
+        });
+      }
     });
   }
 
@@ -298,7 +308,7 @@ class App extends Component {
               const item = this.state.chat_sessions[key];
               return (
                 <TabItem header={item.header} lastReadMessage={item.last_read_message} totalMessages={item.messages.length} key={key}>
-                  <Chat title={item.header} messages={item.messages} onSendMessage={this.handleOnSendMessage} />
+                  <Chat title={item.header} messages={item.messages} onSendMessage={this.handleOnSendMessage} users={item.users} />
                 </TabItem>
               );
             })

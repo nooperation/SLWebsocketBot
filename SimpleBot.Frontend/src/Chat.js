@@ -43,7 +43,23 @@ class ChatHeader extends React.PureComponent {
   }
 }
 
-class ChatContent extends Component {
+class UserList extends Component {
+  render() {
+    return (
+      <div className="chat-container-userlist btn-group-vertical">
+        {
+          this.props.users.map(function (item, index) {
+            return (
+              <button type="button" className="btn btn-default chat-container-userlist-item" key={item.id}>{item.name}</button>
+            );
+          })
+        }
+      </div>
+    );
+  }
+}
+
+class ChatMessages extends Component {
   constructor() {
     super();
 
@@ -77,7 +93,7 @@ class ChatContent extends Component {
 
   render() {
     return (
-      <article id="foobar" className="box-body chat-container-body" ref={chat_list => this.chat_list = chat_list} onScroll={this.handleOnScroll}>
+      <article id="foobar" className="box-body chat-container-messages" ref={chat_list => this.chat_list = chat_list} onScroll={this.handleOnScroll}>
         {
           this.props.messages.map(function (item, index) {
             return (
@@ -134,11 +150,21 @@ class ChatInput extends React.PureComponent {
 }
 
 export class Chat extends Component {
+
   render() {
+    var users_list = null;
+    if(this.props.users && this.props.users.length > 0)
+    {
+      users_list = <UserList users={this.props.users} />;
+    }
+
     return (
       <div className="chat-container wrapper">
         <ChatHeader title={this.props.title} />
-        <ChatContent messages={this.props.messages} />
+        <div className="chat-container-content">
+          <ChatMessages messages={this.props.messages} />
+          {users_list}
+        </div>
         <ChatInput onSendMessage={this.props.onSendMessage}/>
       </div>
     );
